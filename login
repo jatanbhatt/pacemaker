@@ -77,8 +77,8 @@ class SignupScreen(tk.Frame):
         self.B_login.grid(row=3, column=1)
 
     def save_user(self):
-        file = open("logins", "w")
-        file.write(self.E_name.get() + "," + self.E_password.get())
+        file = open("logins", "a")
+        file.write(self.E_name.get() + "," + self.E_password.get() + "\n")
         file.close()
 
     def check(self):
