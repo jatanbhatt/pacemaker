@@ -1,2 +1,2 @@
 # pacemaker
-This is the GUI for the pacemaker project we are responsible for making in 3K04
+MAKE SURE TO DOWNLOAD THE rememberME file and put it in your folder before running the program. It wont run without it
