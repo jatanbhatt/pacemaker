@@ -1,2 +1,2 @@
 # pacemaker
-MAKE SURE TO DOWNLOAD THE rememberME file and put it in your folder before running the program. It wont run without it
+MAKE SURE to make a text doc and name it rememberME and put it with the code
