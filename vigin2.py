@@ -1,4 +1,4 @@
-import tkinter as tk
+import Tkinter as tk
 
 
 class Main(tk.Tk):
@@ -75,7 +75,7 @@ class LoginScreen(tk.Frame):
         else:
             remember_status = self.box_status.get()
             if(remember_status == 1):
-                file = open("rememberME", "w")
+                file = open("rememberME.txt", "w")
                 file.write(self.E_name.get())
                 file.close()
             else:
