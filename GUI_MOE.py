@@ -32,9 +32,10 @@ class WelcomeScreen:    #First window you see
         photo.configure()
         label = tk.Label(self.master, image=photo)
         label.image = photo
+        #label.grid(row=5, columnspan=10)
         master.geometry("500x450")
         master.configure(background="white")
-        label.grid(row=5, columnspan=10)
+
 
     def SignIn_Check(self):    #function called when SignIn_Button is pressed
 
