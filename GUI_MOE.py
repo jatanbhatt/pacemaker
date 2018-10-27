@@ -26,7 +26,7 @@ class WelcomeScreen:    #First window you see
         self.button2.config(font=("Times",15, "bold"), width=7)
         self.label = tk.Label(master, text="Welcome\nPlease sign in or register", fg="red", bg="white")
         self.label.grid(row=0,column=2)
-        self.label.config(font=("Comic Sans MS", 20))
+        self.label.config(font=("Times", 20))
         master.wm_title("Pacemaker")
         photo = tk.PhotoImage(file="heart_Rate.gif")
         photo.configure()
@@ -140,19 +140,27 @@ class AOO_Window(SignIn_Window):
         tk.Label(slave, text="Please enter parameter values", fg="green").grid(row=0, columnspan=4)
         self.LRL_Values()
         tk.Label(slave, text="Lower Rate Limit (PPM)\n(Default = Nominal Value)").grid(row=2, column=0)
-        tk.OptionMenu(slave, self.default, *self.values).grid(row=2,column=2)
+        tk.OptionMenu(slave, self.default, *self.values).grid(row=2, column=2)
 
         self.URL_Values()
         tk.Label(slave, text="Upper Rate Limit (PPM)\n(Default = Nominal Value)").grid(row=4, column=0)
-        tk.OptionMenu(slave, self.default, *self.values).grid(row=4,column=2)
+        tk.OptionMenu(slave, self.default, *self.values).grid(row=4, column=2)
 
         self.Amplitude()
         tk.Label(slave, text="Amplitude (V)\n(Default = Nominal Value)").grid(row=6, column=0)
-        tk.OptionMenu(slave, self.default,"OFF", *self.values).grid(row=6,column=2)
+        tk.OptionMenu(slave, self.default,"OFF", *self.values).grid(row=6, column=2)
 
         self.Width()
         tk.Label(slave, text="Width (ms)\n(Default = Nominal Value)").grid(row=8, column=0)
         tk.OptionMenu(slave, self.default, "0.05", *self.values).grid(row=8, column=2)
+
+        tk.Label(slave, text="\t\t\t\t").grid(row=9)
+        cur_device = tk.Label(slave, text="Current pacemaker device: PACEMAKER")
+        cur_device.grid(row=10, columnspan=3)
+        cur_device.config(font=("Helvetica", "12", "bold", "italic", "underline"))
+        comm = tk.Label(slave, text="No communication with PACEMAKER device")
+        comm.grid(row=12, columnspan=3)
+        comm.config(font=("Helvetica", "12", "bold", "italic", "underline"))
 
 
 class VOO_Window(SignIn_Window):
@@ -174,6 +182,14 @@ class VOO_Window(SignIn_Window):
             self.Width()
             tk.Label(slave, text="Width (ms)\n(Default = Nominal Value)").grid(row=8, column=0)
             tk.OptionMenu(slave, self.default, "0.05", *self.values).grid(row=8, column=2)
+
+            tk.Label(slave, text="\t\t\t\t").grid(row=9)
+            cur_device = tk.Label(slave, text="Current pacemaker device: PACEMAKER")
+            cur_device.grid(row=10, columnspan=3)
+            cur_device.config(font=("Helvetica", "12", "bold", "italic", "underline"))
+            comm = tk.Label(slave, text="No communication with PACEMAKER device")
+            comm.grid(row=12, columnspan=3)
+            comm.config(font=("Helvetica", "12", "bold", "italic", "underline"))
 
 class Register_Window:
     def __init__(self,slave): #slave is just not the master window, it's a sub-window or a slave-window
@@ -201,7 +217,7 @@ class Register_Window:
         pass1 = tk.Entry.get(self.E_pass1)
         pass2 = tk.Entry.get(self.E_pass2)
         blank = tk.Label(self.slave, text="\t\t\t\t\t\t\t")
-        if any(char.isdigit() for char in uname) and len(uname)>=6 and pass1==pass2:        #requirements to register
+        if any(char.isdigit() for char in uname) and len(uname)>=6 and pass1==pass2 and len(pass1)>=6 and any(char.isdigit() for char in pass1):      #requirements to register
             try:
                 f = open("Registration_File.txt", "r+")
                 count = 0
@@ -246,9 +262,15 @@ class Register_Window:
         elif len(uname)<6:
             blank.grid(row=4)
             tk.Label(self.slave, text="Username is too short, registration unsuccessful", fg="red").grid(row=4)
-        else:
+        elif len(pass1)<6:
+            blank.grid(row=4)
+            tk.Label(self.slave, text="Password is too short, registration unsuccessful", fg="red").grid(row=4)
+        elif any(char.isdigit() for char in uname) != True:
             blank.grid(row=4)
             tk.Label(self.slave, text="No digit in username, registration unsuccessful", fg="red").grid(row=4)
+        else:
+            blank.grid(row=4)
+            tk.Label(self.slave, text="No digit is password, registration unsuccessful", fg="red").grid(row=4)
 
 
 
