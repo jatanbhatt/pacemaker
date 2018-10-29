@@ -3,7 +3,7 @@ import tkinter as tk #importing tkinter library
 class WelcomeScreen:    #First window you see
 
     def __init__(self, master): #must define init function when you make a class, takes parameters 'master'
-                           # (which is the 'master' window, thefirst window you see...... 'self' is always there, can explain more in person
+                           # (which is the 'master' window, the first window that appears)
         self.master = master
         self.B_signin = tk.Button(master, text="Sign in", command=self.SignIn_Check) #Creating button, go to 'SignIn_Button' function
         self.B_signin.grid(row=4, column=2)
@@ -28,10 +28,10 @@ class WelcomeScreen:    #First window you see
         self.label.grid(row=0,column=2)
         self.label.config(font=("Times", 20))
         master.wm_title("Pacemaker")
-        photo = tk.PhotoImage(file="heart_Rate.gif")
-        photo.configure()
-        label = tk.Label(self.master, image=photo)
-        label.image = photo
+        #photo = tk.PhotoImage(file="heart_Rate.gif")     This code is not required and is used for demonstration purposes during the lab (requires a local file)
+        #photo.configure()
+        #label = tk.Label(self.master, image=photo)
+        #label.image = photo
         #label.grid(row=5, columnspan=10)
         master.geometry("500x450")
         master.configure(background="white")
@@ -45,23 +45,23 @@ class WelcomeScreen:    #First window you see
 
         try:
             f = open("Registration_File.txt", "r+")     #try to open the file if it exists
-            auth = False    #initialize this to false, you'll see why a few lines down
+            auth = False    #initialized to false, which is default authorization until uname and pass are proven to be correct
             for lines in f: #read file line by line
                 split = lines.split()   #split lines word by word, now they're stored in a list
                 if split[0] == uname and split[1] == pass1: #check if user entry is the same as what is saved in the file
                     auth = True                             #authentication is verified
                     self.SignIn_Instance() #go to this function
                     break
-            if auth == False:           #if u fucked up username or password
+            if auth == False:           #if username or password is incorrect
                 blank.grid(row=1, column=2)
                 tk.Label(self.master, text="Wrong Username or Password\nPlease try again", fg="red").grid(row=1, column=2)
 
 
-        except FileNotFoundError:   #if u try to sign in and there's no mandems registered
+        except FileNotFoundError:   #if file is not found, no users have been registered
             tk.Label(self.master, text="No users have been registered\nplease register then sign in", fg="red").grid(row=1, column=2)
 
 
-    def Register_Instance(self):                  #make a new window when register button is pressed and create an instance of the class 'Register_Window'
+    def Register_Instance(self):      #make a new window when register button is pressed and create an instance of the class 'Register_Window'
         window = tk.Toplevel()
         R_window = Register_Window(window)
 
@@ -131,12 +131,12 @@ class SignIn_Window:
 
     def VOO_Instance(self):
         window = tk.Toplevel()
-        instance = VOO_Window(window)
+        instance = VOO_Window(window)  #creating instance of VOO_Window ( see below )
 
 class AOO_Window(SignIn_Window):
 
-    def __init__(self, slave):      #self explanatory !! each block makes a label, called the function that has the labels stored in it
-                                    #and creates the dropdown menu!!
+    def __init__(self, slave):      #each block makes a label, calls the function that contains the appropriate list
+                                    #and creates a dropdown menu
         tk.Label(slave, text="Please enter parameter values", fg="green").grid(row=0, columnspan=4)
         self.LRL_Values()
         tk.Label(slave, text="Lower Rate Limit (PPM)\n(Default = Nominal Value)").grid(row=2, column=0)
@@ -192,8 +192,8 @@ class VOO_Window(SignIn_Window):
             comm.config(font=("Helvetica", "12", "bold", "italic", "underline"))
 
 class Register_Window:
-    def __init__(self,slave): #slave is just not the master window, it's a sub-window or a slave-window
-                                #everything is explained above this should be self explanatory
+    def __init__(self,slave): #slave is not the master window, it's a sub-window or a slave-window
+
         self.slave = slave
         tk.Label(slave, text="******REGISTRATION******", fg="green").grid(row=0)
         tk.Label(slave, text = "Enter USERNAME (Must include at least one number and be at least 6 characters)").grid(row=1)
@@ -222,7 +222,7 @@ class Register_Window:
                 f = open("Registration_File.txt", "r+")
                 count = 0
                 for line in f:
-                    count+=1                #this entire for loop first checks if too many manz are registered
+                    count+=1                #entire for loop first checks if too many user are registered
                                             #then checks if username is available
                                             #if all is good, register
                 if count >= 11:
@@ -249,7 +249,7 @@ class Register_Window:
                         self.slave.after(1000, self.minimize_R)
 
             except FileNotFoundError:
-                f = open("Registration_File.txt", "a+")     #if file is not found, open it and register and print to "Registration_File" to save uname and pass
+                f = open("Registration_File.txt", "a+")     #if file is not found, create the registraion file and write uname and pass to file
                 f.write("Username Password\n")
                 f.write("%s   %s\n" % (uname, pass1))
                 f.close()
