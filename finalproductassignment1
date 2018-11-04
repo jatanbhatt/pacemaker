@@ -1,0 +1,365 @@
+import tkinter as tk
+
+
+class Main(tk.Tk):
+
+    def __init__(self, *args, **kwargs):
+        tk.Tk.__init__(self, *args, **kwargs)
+        window = tk.Frame(self)
+
+        window.pack(side="top", fill="both", expand=True)
+
+        window.grid_rowconfigure(0, weight=1)
+        window.grid_columnconfigure(0, weight=1)
+
+        self.frames = {}
+
+        for F in (LoginScreen, SignupScreen, Home, VOO, AOO):
+            frame = F(window, self)
+
+            self.frames[F] = frame
+
+            frame.grid(row=0, column=0, sticky="nsew")
+
+        self.show_frame(LoginScreen)
+        #the values and standard num for the modes
+        self.values = []
+        self.default = tk.StringVar()
+
+    def show_frame(self, wind):
+        frame = self.frames[wind]
+        frame.tkraise()
+
+    def LRL_Values(self):  # creating list to store the allowed range of values for Lower Rate Limit
+        self.values = []
+        i = 30
+        while i <= 45:
+            self.values.append(i)
+            i = i + 5
+        while i <= 89:
+            self.values.append(i)
+            i += 1
+        while i <= 175:
+            self.values.append(i)
+            i = i + 5
+        # declaring variable
+        self.default = tk.StringVar()
+        self.default.set(self.values[
+                             14])  # setting the nominal value (as defined in PACEMAKER document, to be displayed as a default value)
+        ##all other functions do the same thing for different parameters
+
+    def URL_Values(self):
+        self.values = []
+        i = 50
+        while i <= 175:
+            self.values.append(i)
+            i = i + 5
+        self.default = tk.StringVar()
+        self.default.set(self.values[14])
+
+    def Amplitude(self):
+        self.values = []
+        for i in range(5, 33):
+            self.values.append(float(i) / 10)
+        i = 3.5
+        while i <= 7.0:
+            self.values.append(i)
+            i = i + 0.5
+        self.default = tk.StringVar()
+        self.default.set(self.values[28])
+
+    def Width(self):
+        self.values = []
+        for i in range(1, 20):
+            self.values.append(float(i) / 10)
+        self.default = tk.StringVar()
+        self.default.set(self.values[3])
+
+    def getDefault(self):
+        return self.default
+
+    def getValues(self):
+        return self.values
+
+class LoginScreen(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent, bg="black")
+        self.controller = controller
+
+        self.E_name = tk.Entry(self, bg="#BA4C30", fg="White", font="helvetica")
+        try:
+            file = open("rememberME.txt", "r")
+            name = file.read()
+            file.close()
+            if (file != ""):
+                self.E_name.insert(0, name)
+        except FileNotFoundError:
+            file = open("rememberME.txt", "w")
+            file.close()
+
+        #Extra text
+        L_welcome = tk.Label(self, text="MaceBaker Pacemaker", bg="black", fg="#F67F61", font=("helvetica", 40))
+        L_welcome.grid(row=6, column=10, columnspan = 10)
+        L_sign = tk.Label(self, text="Sign in to your MaceBaker \n If you do not have an account, click on the sign up button to register!", bg="black", fg="#BA4C30", font=("helvetica", 16))
+        L_sign.grid(row=8, column=10, columnspan = 10)
+
+        L_name = tk.Label(self, text="Name", bg="black", fg="#F67F61", font="helvetica")
+        L_password = tk.Label(self, text="Password", bg="black", fg="#F67F61", font="helvetica")
+
+        self.E_password = tk.Entry(self, bg="#BA4C30", fg="White", font="helvetica")
+        self.E_password.config(show="*")
+        B_login = tk.Button(self, text="Login", command=self.auth_login, bg="#BA4C30", fg="white", font="helvetica")
+        B_signup = tk.Button(self, text="Signup", command=lambda : controller.show_frame(SignupScreen), bg="#BA4C30", fg="white", font="helvetica")
+        self.box_status = tk.IntVar()
+        self.B_remember = tk.Checkbutton(self, text="Remember me", variable= self.box_status, bg="black", fg="#F67F61", font=14)
+
+        L_name.grid(row=10, column=13)
+        L_password.grid(row=11, column=13)
+        self.E_name.grid(row=10, column=14)
+        self.E_password.grid(row=11, column=14)
+        B_login.grid(row=12, column=14)
+        B_signup.grid(row=12, column=15)
+        self.B_remember.grid(row=13, column=14)
+
+        # This is waste text to try and make the labaels and buttons in the center ignore below vvvv
+        tk.Label(self, text="Mode: VOO", bg="black", fg="black", font=("helvetica", 56)).grid(row=0, column=0)
+        tk.Label(self, text="Mode: VOO", bg="black", fg="black", font=("helvetica", 20)).grid(row=6)
+        tk.Label(self, bg="black").grid(row=9)
+        tk.Label(self, bg="black").grid(row=11)
+        tk.Label(self, bg="black").grid(row=13)
+        tk.Label(self, bg="black").grid(row=15)
+        tk.Label(self, bg="black").grid(row=17)
+        # ingnore this bit ^^^
+
+    def auth_login(self):
+        authName = self.E_name.get() + "," + self.E_password.get() + "\n"
+        try:
+            file = open("logins.txt", "r")
+            x = file.readlines()
+            file.close()
+            auth = False
+            for i in x:
+                if(i == authName):
+                    auth = True
+            if(auth == False):
+                L_wrongLogin = tk.Label(self, text= "Wrong username or password, Please try again", bg="black", fg="white")
+                L_wrongLogin.grid(row=14, column=14)
+            else:
+                remember_status = self.box_status.get()
+                if(remember_status == 1):
+                    file = open("rememberME.txt", "w")
+                    file.write(self.E_name.get())
+                    file.close()
+                else:
+                    file = open("rememberME.txt", "w")
+                    file.write("")
+                    file.close()
+                self.controller.show_frame(Home)
+        except FileNotFoundError:
+                tk.Label(self, text="No users have been registered\nplease register then sign in", bg="black", fg="white").grid(
+                    row=14, column=14)
+
+
+class SignupScreen(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent, bg="black")
+        self.controller = controller
+
+        tk.Label(self, text="Register for an account at MaceBaker", bg="black", fg="#F67F61", font=("helvetica", 40)).grid(row=4, column=4, columnspan=3)
+        tk.Label(self, text="The username must be longer than 3 characters.\nThe password must be longer than 6 characters.",
+                 bg="black", fg="#BA4C30", font=("helvetica", 16)).grid(row=6, column=4, rowspan=2, columnspan=3)
+
+        self.L_name = tk.Label(self, text = "Name", bg="black", fg="#F67F61", font="helvetica")
+        self.L_password = tk.Label(self, text="Password", bg="black", fg="#F67F61", font="helvetica")
+        self.L_password2 = tk.Label(self, text="Confirm Password", bg="black", fg="#F67F61", font="helvetica")
+        self.E_name = tk.Entry(self, bg="#BA4C30", fg="White", font="helvetica")
+        self.E_password = tk.Entry(self, bg="#BA4C30", fg="White", font="helvetica")
+        self.E_password.config(show="*")
+        self.E_password2 = tk.Entry(self, bg="#BA4C30", fg="White", font="helvetica")
+        self.E_password2.config(show="*")
+        self.B_login = tk.Button(self, text="Register", command = self.check, bg="#BA4C30", fg="white", font="helvetica")
+
+        self.L_name.grid(row=8, column=4)
+        self.L_password.grid(row=10, column=4)
+        self.L_password2.grid(row=12, column=4)
+        self.E_name.grid(row =8, column=5)
+        self.E_password.grid(row=10, column=5)
+        self.E_password2.grid(row=12, column=5)
+        self.B_login.grid(row=14, column=6)
+
+        # This is waste text to try and make the labaels and buttons in the center ignore below vvvv
+        tk.Label(self, text="Mode: VOO", bg="black", fg="black", font=("helvetica", 40)).grid(row=0, column=0)
+        tk.Label(self, text="Mode: VOO", bg="black", fg="black", font=("helvetica", 20)).grid(row=6)
+        tk.Label(self, bg="black").grid(row=9)
+        tk.Label(self, bg="black").grid(row=11)
+        tk.Label(self, bg="black").grid(row=13)
+        tk.Label(self, bg="black").grid(row=15)
+        tk.Label(self, bg="black").grid(row=7)
+        # ingnore this bit ^^^
+
+    def save_user(self):
+        file = open("logins.txt", "a")
+        file.write(self.E_name.get() + "," + self.E_password.get() + "\n")
+        file.close()
+
+    def check(self):
+        num_of_reg_users = 0
+
+        try:
+            file = open("logins.txt", "r")
+            temp = file.readlines()
+            num_of_reg_users = len(temp)
+            file.close()
+        except FileNotFoundError:
+            file = open("logins.txt", "w")
+            file.close()
+        if(num_of_reg_users < 10):
+            name = self.E_name.get()
+            password = self.E_password.get()
+            password2 = self.E_password2.get()
+            print(len(name))
+            print(len(password))
+            if(len(name)<3):
+                    self.test2 = tk.Label(self, text="    Username too short     ", bg="black", fg="white", font=13)
+                    self.test2.grid(row=14, column=5)
+            else:
+                if(password != password2):
+                    self.test = tk.Label(self, text=" Passwords do not match ", bg="black", fg="white", font=13)
+                    self.test.grid(row=14, column=5)
+                else:
+                    if(len(password) < 6):
+                        self.test3 = tk.Label(self, text="Not long enough password", bg="black", fg="white", font=13)
+                        self.test3.grid(row=14, column=5)
+                    else:
+                        self.save_user()
+                        self.controller.show_frame(Home)
+        else:
+            tk.Label(self, text="Registeration is full", bg="black", fg="white", font=13).grid(row=14, column=5)
+
+
+
+class Home(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent, bg="black")
+        #to be implemented later
+        #self.L_info = tk.Label(self, text="Choosing a mode", bg="#F67F61", fg="white")
+        #self.L_info2 = tk.Label(self, text="Configuring the mode")
+        #self.L_info3 = tk.Label(self, text="Finalize and confirm")
+
+        #self.L_info.grid(row=0, column=3)
+        #self.L_info2.grid(row=0, column=5)
+        #self.L_info3.grid(row=0, column=7)
+
+        tk.Label(self, text="MaceBaker Modes", bg="black", fg="#F67F61", font=("helvetica", 40)).grid(row=4, column=4, columnspan=2)
+        tk.Label(self,text="Choose one of the following modes for the pacemaker",
+                          bg="black", fg="#BA4C30", font=("helvetica", 16)).grid(row=6, column=4, columnspan=2)
+        self.B_ATT = tk.Button(self, text="ATT", bg="#BA4C30", fg="white", font="helvetica")
+        self.B_VTT = tk.Button(self, text="VTT", bg="#BA4C30", fg="white", font="helvetica")
+        self.B_AOO = tk.Button(self, text="AOO", bg="#BA4C30", fg="white", font="helvetica", command=lambda : controller.show_frame(AOO))
+        self.B_AAI = tk.Button(self, text="AAI", bg="#BA4C30", fg="white", font="helvetica")
+        self.B_VOO = tk.Button(self, text="VOO", bg="#BA4C30", fg="white", font="helvetica", command=lambda : controller.show_frame(VOO))
+        self.B_VII = tk.Button(self, text="VII", bg="#BA4C30", fg="white", font="helvetica")
+        self.B_VDD = tk.Button(self, text="VDD", bg="#BA4C30", fg="white", font="helvetica")
+        self.B_DOO = tk.Button(self, text="DOO", bg="#BA4C30", fg="white", font="helvetica")
+
+        self.B_ATT.grid(row=8, column=4)
+        self.B_VTT.grid(row=10, column=4)
+        self.B_AOO.grid(row=12, column=4)
+        self.B_AAI.grid(row=14, column=4)
+        self.B_VOO.grid(row=8, column=5)
+        self.B_VII.grid(row=10, column=5)
+        self.B_VDD.grid(row=12, column=5)
+        self.B_DOO.grid(row=14, column=5)
+
+        # This is waste text to try and make the labaels and buttons in the center ignore below vvvv
+        tk.Label(self, text="Mode: VOO", bg="black", fg="black", font=("helvetica", 60)).grid(row=0, column=0)
+        tk.Label(self, text="Mode: VOO", bg="black", fg="black", font=("helvetica", 80)).grid(row=3, column=4, columnspan=2)
+        tk.Label(self, text="Mode: VOO", bg="black", fg="black", font=("helvetica", 20)).grid(row=7)
+        tk.Label(self, bg="black").grid(row=9)
+        tk.Label(self, bg="black").grid(row=11)
+        tk.Label(self, bg="black").grid(row=13)
+        tk.Label(self, bg="black").grid(row=15)
+        tk.Label(self, bg="black").grid(row=17)
+        # ingnore this bit ^^^
+
+class AOO(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent, bg="Black")
+        self.controller = controller
+
+        tk.Label(self, text="Mode: AOO", bg="black", fg="#F67F61", font=("helvetica", 40)).grid(row=2, column=4,columnspan=5)
+        tk.Label(self, text="All parameters are set to default automatically, "
+                            "\nChange any of the following parameters and click continue", bg="black", fg="#BA4C30", font=("helvetica", 16)).grid(row=4, column=4,
+                                                                                                rowspan=2, columnspan=5)
+        self.B_Back = tk.Button(self, text="Back", bg="#BA4C30", fg="white", font="helvetica", command= lambda : controller.show_frame(Home))
+        self.B_Start = tk.Button(self, text="Start Connection", bg="#BA4C30", fg="white", font="helvetica")
+        self.B_Back.grid(row=18, column=6)
+        self.B_Start.grid(row=16, column=6)
+        self.controller.LRL_Values()
+        tk.Label(self, text="Lower Rate Limit (PPM) - (Default = Nominal Value)", bg="black", fg="#F67F61", font="helvetica").grid(row=8, column=4, columnspan=2)
+        self.x = tk.OptionMenu(self, self.controller.getDefault(), *self.controller.getValues()).grid(row=8, column=6)
+
+        self.controller.URL_Values()
+        tk.Label(self, text="Upper Rate Limit (PPM) - (Default = Nominal Value)", bg="black", fg="#F67F61", font="helvetica").grid(row=10, column=4, columnspan=2)
+        tk.OptionMenu(self, self.controller.getDefault(), *self.controller.getValues()).grid(row=10, column=6)
+
+        self.controller.Amplitude()
+        tk.Label(self, text="Amplitude (V) - (Default = Nominal Value)", bg="black", fg="#F67F61", font="helvetica").grid(row=12, column=4, columnspan=2)
+        tk.OptionMenu(self, self.controller.getDefault(), "OFF", *self.controller.getValues()).grid(row=12, column=6)
+
+        self.controller.Width()
+        tk.Label(self, text="Width (ms) - (Default = Nominal Value)", bg="black", fg="#F67F61", font="helvetica").grid(row=14, column=4, columnspan=2)
+        tk.OptionMenu(self, self.controller.getDefault(), "0.05", *self.controller.getValues()).grid(row=14, column=6)
+
+        #This is waste text to try and make the labaels and buttons in the center ignore below vvvv
+        tk.Label(self, text="Mode: VOO", bg="black", fg="black", font=("helvetica", 56)).grid(row=0, column=0)
+        tk.Label(self, text="Mode: VOO", bg="black", fg="black", font=("helvetica", 20)).grid(row=6)
+        tk.Label(self, bg="black").grid(row=9)
+        tk.Label(self, bg="black").grid(row=11)
+        tk.Label(self, bg="black").grid(row=13)
+        tk.Label(self, bg="black").grid(row=15)
+        tk.Label(self, bg="black").grid(row=17)
+        #ingnore this bit ^^^
+
+class VOO(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent, bg="Black")
+        self.controller = controller
+
+        tk.Label(self, text="Mode: VOO", bg="black", fg="#F67F61", font=("helvetica", 40)).grid(row=2, column=4,columnspan=5)
+        tk.Label(self, text="All parameters are set to default automatically, "
+                            "\nChange any of the following parameters and click continue", bg="black", fg="#BA4C30", font=("helvetica", 16)).grid(row=4, column=4,
+                                                                                                rowspan=2, columnspan=5)
+        self.B_Back = tk.Button(self, text="Back", bg="#BA4C30", fg="white", font="helvetica", command= lambda : controller.show_frame(Home))
+        self.B_Start = tk.Button(self, text="Start Connection", bg="#BA4C30", fg="white", font="helvetica")
+        self.B_Back.grid(row=18, column=6)
+        self.B_Start.grid(row=16, column=6)
+        self.controller.LRL_Values()
+        tk.Label(self, text="Lower Rate Limit (PPM) - (Default = Nominal Value)", bg="black", fg="#F67F61", font="helvetica").grid(row=8, column=4, columnspan=2)
+        self.x = tk.OptionMenu(self, self.controller.getDefault(), *self.controller.getValues()).grid(row=8, column=6)
+
+        self.controller.URL_Values()
+        tk.Label(self, text="Upper Rate Limit (PPM) - (Default = Nominal Value)", bg="black", fg="#F67F61", font="helvetica").grid(row=10, column=4, columnspan=2)
+        tk.OptionMenu(self, self.controller.getDefault(), *self.controller.getValues()).grid(row=10, column=6)
+
+        self.controller.Amplitude()
+        tk.Label(self, text="Amplitude (V) - (Default = Nominal Value)", bg="black", fg="#F67F61", font="helvetica").grid(row=12, column=4, columnspan=2)
+        tk.OptionMenu(self, self.controller.getDefault(), "OFF", *self.controller.getValues()).grid(row=12, column=6)
+
+        self.controller.Width()
+        tk.Label(self, text="Width (ms) - (Default = Nominal Value)", bg="black", fg="#F67F61", font="helvetica").grid(row=14, column=4, columnspan=2)
+        tk.OptionMenu(self, self.controller.getDefault(), "0.05", *self.controller.getValues()).grid(row=14, column=6)
+
+        #This is waste text to try and make the labaels and buttons in the center ignore below vvvv
+        tk.Label(self, text="Mode: VOO", bg="black", fg="black", font=("helvetica", 56)).grid(row=0, column=0)
+        tk.Label(self, text="Mode: VOO", bg="black", fg="black", font=("helvetica", 20)).grid(row=6)
+        tk.Label(self, bg="black").grid(row=9)
+        tk.Label(self, bg="black").grid(row=11)
+        tk.Label(self, bg="black").grid(row=13)
+        tk.Label(self, bg="black").grid(row=15)
+        tk.Label(self, bg="black").grid(row=17)
+        #ingnore this bit ^^^
+
+
+app = Main()
+app.mainloop()

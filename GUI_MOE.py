@@ -28,11 +28,19 @@ class WelcomeScreen:    #First window you see
         self.label.grid(row=0,column=2)
         self.label.config(font=("Times", 20))
         master.wm_title("Pacemaker")
+<<<<<<< HEAD
         photo = tk.PhotoImage(file="heart_Rate.gif")     #This code is not required and is used for demonstration purposes during the lab (requires a local file)
         photo.configure()
         label = tk.Label(self.master, image=photo)
         label.image = photo
         label.grid(row=5, columnspan=10)
+=======
+        #photo = tk.PhotoImage(file="heart_Rate.gif")     This code is not required and is used for demonstration purposes during the lab (requires a local file)
+        #photo.configure()
+        #label = tk.Label(self.master, image=photo)
+        #label.image = photo
+        #label.grid(row=5, columnspan=10)
+>>>>>>> fbae76ce8faf7d5356a26806c896c52eac3624b8
         master.geometry("500x450")
         master.configure(background="white")
 
@@ -399,6 +407,7 @@ class SignIn_Window:
     def VOO_Instance(self):
         window = tk.Toplevel()
         instance = VOO_Window(window)  #creating instance of VOO_Window ( see below )
+<<<<<<< HEAD
 
     def AAT_Instance(self):
         window = tk.Toplevel()
@@ -466,15 +475,21 @@ class SignIn_Window:
 
 
 
+=======
+>>>>>>> fbae76ce8faf7d5356a26806c896c52eac3624b8
 
 class AOO_Window(SignIn_Window):
 
     def __init__(self, slave):      #each block makes a label, calls the function that contains the appropriate list
                                     #and creates a dropdown menu
+<<<<<<< HEAD
         L_title = tk.Label(slave, text="Please enter parameter values for AOO pacing mode\n(Default = Nominal Value)", fg="green")
         L_title.grid(row=0, columnspan=4)
         L_title.configure(font=("Times", 15, "bold", "italic"))
 
+=======
+        tk.Label(slave, text="Please enter parameter values", fg="green").grid(row=0, columnspan=4)
+>>>>>>> fbae76ce8faf7d5356a26806c896c52eac3624b8
         self.LRL_Values()
         tk.Label(slave, text="Lower Rate Limit (PPM)", font=("Helvetica", 10, "bold")).grid(row=2, column=0)
         tk.OptionMenu(slave, self.default, *self.values).grid(row=2, column=2)
@@ -536,13 +551,34 @@ class VOO_Window(SignIn_Window):
             comm.grid(row=12, columnspan=3)
             comm.config(font=("Helvetica", "12", "bold", "italic", "underline"))
 
+<<<<<<< HEAD
 class AAT_Window(SignIn_Window):
+=======
+class Register_Window:
+    def __init__(self,slave): #slave is not the master window, it's a sub-window or a slave-window
+
+        self.slave = slave
+        tk.Label(slave, text="******REGISTRATION******", fg="green").grid(row=0)
+        tk.Label(slave, text = "Enter USERNAME (Must include at least one number and be at least 6 characters)").grid(row=1)
+        self.E_uname = tk.Entry(slave)
+        self.E_uname.grid(row=1, column = 1)
+        tk.Label(slave, text="Enter PASSWORD (Must include at least one number and be at least 6 characters").grid(row=2)
+        self.E_pass1 = tk.Entry(slave)
+        self.E_pass1.config(show="*")
+        self.E_pass1.grid(row=2, column = 1)
+        tk.Label(slave, text="Re-enter password").grid(row=3)
+        self.E_pass2 = tk.Entry(slave)
+        self.E_pass2.config(show="*")
+        self.E_pass2.grid(row=3, column=1)
+        tk.Button(slave, text="Register",command=self.Register_Check).grid(row=4, column=1)
+>>>>>>> fbae76ce8faf7d5356a26806c896c52eac3624b8
 
     def __init__(self, slave):
         L_title = tk.Label(slave, text="Please enter parameter values for AAT pacing mode\n(Default = Nominal Value)", fg="green")
         L_title.grid(row=0, columnspan=4)
         L_title.configure(font=("Times", 15, "bold", "italic"))
 
+<<<<<<< HEAD
         self.LRL_Values()
         tk.Label(slave, text="Lower Rate Limit (PPM)", font=("Helvetica", 10, "bold")).grid(row=2, column=0)
         tk.OptionMenu(slave, self.default, *self.values).grid(row=2, column=2)
@@ -1620,6 +1656,67 @@ class DDDR_Window(SignIn_Window):
         self.Recovery_Time()
         tk.Label(slave, text="Recovery Time (min)", font=("Helvetica", 10, "bold")).grid(row=24, column=3)
         tk.OptionMenu(slave, self.default, *self.values).grid(row=24, column=5)
+=======
+    def Register_Check(self):
+        uname = tk.Entry.get(self.E_uname)              #initializing variables based on user entry
+        pass1 = tk.Entry.get(self.E_pass1)
+        pass2 = tk.Entry.get(self.E_pass2)
+        blank = tk.Label(self.slave, text="\t\t\t\t\t\t\t")
+        if any(char.isdigit() for char in uname) and len(uname)>=6 and pass1==pass2 and len(pass1)>=6 and any(char.isdigit() for char in pass1):      #requirements to register
+            try:
+                f = open("Registration_File.txt", "r+")
+                count = 0
+                for line in f:
+                    count+=1                #entire for loop first checks if too many user are registered
+                                            #then checks if username is available
+                                            #if all is good, register
+                if count >= 11:
+                    blank.grid(row=4)
+                    overflow = tk.Label(self.slave, text = "Error: Too many people registered", fg="red")
+                    overflow.grid(row=4)
+                else:
+                    f.seek(0)
+                    same = False
+                    for line in f:
+                        split = line.split()
+                        if split[0] == uname:
+                            same = True
+                            blank.grid(row=4)
+                            tk.Label(self.slave, text="Username is taken, try another", fg="red").grid(row=4)
+                            break
+                    if same == False:
+                        f.close()
+                        f = open("Registration_File.txt", "a+")
+                        f.write("%s   %s\n" % (uname, pass1))
+                        f.close()
+                        blank.grid(row=4)
+                        tk.Label(self.slave, text="Registration Successful!", fg="blue").grid(row=4)
+                        self.slave.after(1000, self.minimize_R)
+
+            except FileNotFoundError:
+                f = open("Registration_File.txt", "a+")     #if file is not found, create the registraion file and write uname and pass to file
+                f.write("Username Password\n")
+                f.write("%s   %s\n" % (uname, pass1))
+                f.close()
+                blank.grid(row=4)
+                tk.Label(self.slave, text="Registration Successful!", fg="blue").grid(row=4)
+                self.slave.after(1000, self.minimize_R)
+        elif pass1!=pass2:
+            blank.grid(row=4)
+            tk.Label(self.slave, text="Passwords are not the same, registration unsuccessful", fg="red").grid(row=4)
+        elif len(uname)<6:
+            blank.grid(row=4)
+            tk.Label(self.slave, text="Username is too short, registration unsuccessful", fg="red").grid(row=4)
+        elif len(pass1)<6:
+            blank.grid(row=4)
+            tk.Label(self.slave, text="Password is too short, registration unsuccessful", fg="red").grid(row=4)
+        elif any(char.isdigit() for char in uname) != True:
+            blank.grid(row=4)
+            tk.Label(self.slave, text="No digit in username, registration unsuccessful", fg="red").grid(row=4)
+        else:
+            blank.grid(row=4)
+            tk.Label(self.slave, text="No digit is password, registration unsuccessful", fg="red").grid(row=4)
+>>>>>>> fbae76ce8faf7d5356a26806c896c52eac3624b8
 
 
 
