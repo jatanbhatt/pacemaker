@@ -1,4 +1,5 @@
 import tkinter as tk #importing tkinter library
+import serial
 
 name = ""
 
@@ -1805,10 +1806,11 @@ class VVIR_Window(SignIn_Window):
             tk.Label(self.slave, text="Upper rate limit must be higher than Lower rate limit!").grid(row=27, column=6)
         else:
             self.B_start.config(state="active")
-            tk.Label(self.skave, text="\t\t\t\t").grid(row=27, column=6)
+            tk.Label(self.slave, text="\t\t\t\t").grid(row=27, column=6)
             tk.Label(self.slave, text="Verification Successful").grid(row=27, column=6)
 
-
+data = serial.Serial("COM7",9600)
+print (data.name)
 
 def main():
     master = tk.Tk()
