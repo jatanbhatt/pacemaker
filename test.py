@@ -1,4 +1,6 @@
 import tkinter as tk #importing tkinter library
+import serial
+import time
 
 name = ""
 
@@ -1808,6 +1810,22 @@ class VVIR_Window(SignIn_Window):
             tk.Label(self.skave, text="\t\t\t\t").grid(row=27, column=6)
             tk.Label(self.slave, text="Verification Successful").grid(row=27, column=6)
 
+
+#Testing Serial Communication with Arduino
+#ls /dev/tty.usb
+ser = serial.Serial()
+ser.port = "/dev/tty.usbmodem14201"
+ser.baudrate = 9600
+print("Opening Serial Port")
+ser.open()
+ser.write(0x12)
+
+#print (ser.read())
+print (ser.name)
+
+print("Closing Serial Port")
+ser.close()
+print("Serial Port Closed")
 
 
 def main():
