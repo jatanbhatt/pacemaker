@@ -1,5 +1,4 @@
 import tkinter as tk #importing tkinter library
-import serial
 import time
 
 name = ""
@@ -514,6 +513,8 @@ class AOO_Window(SignIn_Window):
         fileName = name + ".txt"
         file = open(fileName, "w")
         file.write("AOO\n")
+        print("")
+
         file.write(self.O_LRL.get() + "\n")
         file.write(self.O_URL.get() + "\n")
         file.write(self.O_Amplitude.get() + "\n")
@@ -526,6 +527,24 @@ class AOO_Window(SignIn_Window):
                 text="Upper rate limit must be higher than Lower rate limit!").grid(
                 row=27, column=6)
             else:
+                store = {
+                "p_LRL" : self.O_LRL.get(),
+                "p_URL" : self.O_URL.get(),
+                "p_aPulseAmplitude" : float(self.O_Amplitude.get())*10,
+                "p_aPulseWidth" : float(self.O_Width.get())*100,
+                "p_vPulseAmplitude" : 0,
+                "p_vPulseWidth" : 0,
+                "p_paceMode" : "02",
+                "p_VRP" : 0,
+                "p_ARP" : 0,
+                "p_Hysteresis" : 0,
+                "p_responseFactor" : 0,
+                "p_MSR" : 0,
+                "p_activityThreshold" : 0,
+                "p_reactionTime" : 0,
+                "p_recoveryTime" : 0
+                }
+                print(store["p_aPulseAmplitude"])
                 self.B_start.config(state="active")
                 tk.Label(self.slave, text="\t\t\t\t\t\t").grid(row=27, column=6)
                 tk.Label(self.slave, text="Verification Successful").grid(row=27, column=6)
@@ -636,6 +655,23 @@ class VOO_Window(SignIn_Window):
         if(int(self.O_LRL.get()) >= int(self.O_URL.get())):
             tk.Label(self.slave, text="Upper rate limit must be higher than Lower rate limit!").grid(row=27, column=6)
         else:
+            store = {
+                "p_LRL": self.O_LRL.get(),
+                "p_URL": self.O_URL.get(),
+                "p_vPulseAmplitude": float(self.O_Amplitude.get())*10,
+                "p_vPulseWidth": float(self.O_Width.get())*100,
+                "p_aPulseAmplitude": 0,
+                "p_aPulseWidth": 0,
+                "p_paceMode": 0,
+                "p_VRP": 0,
+                "p_ARP": 0,
+                "p_Hysteresis": 0,
+                "p_responseFactor": 0,
+                "p_MSR" : 0,
+                "p_activityThreshold": 0,
+                "p_reactionTime": 0,
+                "p_recoveryTime": 0
+            }
             self.B_start.config(state="active")
             tk.Label(self.slave, text="\t\t\t\t\t\t").grid(row=27, column=6)
             tk.Label(self.slave, text="Verification Successful").grid(row=27, column=6)
@@ -812,6 +848,23 @@ class AAI_Window(SignIn_Window):
         if (int(self.O_LRL.get()) >= int(self.O_URL.get())):
             tk.Label(self.slave, text="Upper rate limit must be higher than Lower rate limit!").grid(row=27, column=6)
         else:
+            store = {
+                "p_LRL": self.O_LRL.get(),
+                "p_URL": self.O_URL.get(),
+                "p_aPulseAmplitude": float(self.O_Amplitude.get())*10,
+                "p_aPulseWidth": float(self.O_Width.get())*100,
+                "p_vPulseAmplitude": 0,
+                "p_vPulseWidth": 0,
+                "p_paceMode": "06",
+                "p_VRP": 0,
+                "p_ARP": self.O_Refractory.get(),
+                "p_Hysteris": self.O_Hysteresis.get(),
+                "p_responseFactor": 0,
+                "p_MSR" : 0,
+                "p_activityThreshold": 0,
+                "p_reactionTime": 0,
+                "p_recoveryTime": 0
+            }
             self.B_start.config(state="active")
             tk.Label(self.slave, text="\t\t\t\t\t\t").grid(row=27, column=6)
             tk.Label(self.slave, text="Verification Successful").grid(row=27, column=6)
@@ -973,6 +1026,23 @@ class VVI_Window(SignIn_Window):
         if (int(self.O_LRL.get()) >= int(self.O_URL.get())):
             tk.Label(self.slave, text="Upper rate limit must be higher than Lower rate limit!").grid(row=27, column=6)
         else:
+            store = {
+                "p_LRL": self.O_LRL.get(),
+                "p_URL": self.O_URL.get(),
+                "p_vPulseAmplitude": float(self.O_Amplitude.get())*10,
+                "p_vPulseWidth": float(self.O_Width.get())*100,
+                "p_aPulseAmplitude": 0,
+                "p_aPulseWidth": 0,
+                "p_paceMode": "04",
+                "p_VRP": self.O_Refractory.get(),
+                "p_ARP": 0,
+                "p_Hysteris": self.O_Hysteresis.get(),
+                "p_responseFactor": 0,
+                "p_MSR" : 0,
+                "p_activityThreshold": 0,
+                "p_reactionTime": 0,
+                "p_recoveryTime": 0
+            }
             self.B_start.config(state="active")
             tk.Label(self.slave, text="\t\t\t\t\t\t").grid(row=27, column=6)
             tk.Label(self.slave, text="Verification Successful").grid(row=27, column=6)
@@ -1149,6 +1219,23 @@ class AOOR_Window(SignIn_Window):
         if (int(self.O_LRL.get()) >= int(self.O_URL.get())):
             tk.Label(self.slave, text="Upper rate limit must be higher than Lower rate limit!").grid(row=27, column=6)
         else:
+            store = {
+                "p_LRL": self.O_LRL.get(),
+                "p_URL": self.O_URL.get(),
+                "p_aPulseAmplitude": float(self.O_Amplitude.get())*10,
+                "p_aPulseWidth": float(self.O_Width.get())*100,
+                "p_vPulseAmplitude": 0,
+                "p_vPulseWidth": 0,
+                "p_paceMode": "03",
+                "p_VRP": 0,
+                "p_ARP": 0,
+                "p_Hysteris": 0,
+                "p_responseFactor": self.O_R_Factor.get(),
+                "p_MSR" : self.O_Max_Sensor_Rate.get(),
+                "p_activityThreshold": self.O_Threshold.get(),
+                "p_reactionTime": self.O_Reaction_Time.get(),
+                "p_recoveryTime": self.O_Recovery_Time.get()
+            }
             self.B_start.config(state="active")
             tk.Label(self.slave, text="\t\t\t\t\t\t").grid(row=27, column=6)
             tk.Label(self.slave, text="Verification Successful").grid(row=27, column=6)
@@ -1325,6 +1412,23 @@ class VOOR_Window(SignIn_Window):
         if (int(self.O_LRL.get()) >= int(self.O_URL.get())):
             tk.Label(self.slave, text="Upper rate limit must be higher than Lower rate limit!").grid(row=27, column=6)
         else:
+            store = {
+                "p_LRL": self.O_LRL.get(),
+                "p_URL": self.O_URL.get(),
+                "p_vPulseAmplitude": float(self.O_Amplitude.get())*10,
+                "p_vPulseWidth": float(self.O_Width.get())*100,
+                "p_aPulseAmplitude": 0,
+                "p_aPulseWidth": 0,
+                "p_paceMode": "01",
+                "p_VRP": 0,
+                "p_ARP": 0,
+                "p_Hysteris": 0,
+                "p_responseFactor": self.O_R_Factor.get(),
+                "p_MSR" : self.O_Max_Sensor_Rate.get(),
+                "p_activityThreshold": self.O_Threshold.get(),
+                "p_reactionTime": self.O_Reaction_Time.get(),
+                "p_recoveryTime": self.O_Recovery_Time.get()
+            }
             self.B_start.config(state="active")
             tk.Label(self.slave, text="\t\t\t\t\t\t").grid(row=27,column=6)
             tk.Label(self.slave, text="Verification Successful").grid(row=27, column=6)
@@ -1518,8 +1622,9 @@ class AAIR_Window(SignIn_Window):
             tk.Frame(slave, height=1, width=400, bg="green").grid(row=7, column=3)
 
             self.Threshold()
+            self.O_Threshold = tk.StringVar()
             tk.Label(slave, text="Activity Threshold", font=("Helvetica", 10, "bold")).grid(row=8, column=3)
-            tk.OptionMenu(slave, self.default, *self.values).grid(row=8, column=5)
+            tk.OptionMenu(slave, self.O_Threshold, *self.values).grid(row=8, column=5)
             tk.Frame(slave, height=1, width=400, bg="green").grid(row=9, column=3)
 
             self.Reaction_Time()
@@ -1572,6 +1677,23 @@ class AAIR_Window(SignIn_Window):
         if (int(self.O_LRL.get()) >= int(self.O_URL.get())):
             tk.Label(self.slave, text="Upper rate limit must be higher than Lower rate limit!").grid(row=27, column=6)
         else:
+            store = {
+                "p_LRL": self.O_LRL.get(),
+                "p_URL": self.O_URL.get(),
+                "p_aPulseAmplitude": float(self.O_Amplitude.get())*10,
+                "p_aPulseWidth": float(self.O_Width.get())*100,
+                "p_vPulseAmplitude": 0,
+                "p_vPulseWidth": 0,
+                "p_paceMode": "07",
+                "p_VRP": 0,
+                "p_ARP": 0,
+                "p_Hysteris": self.O_Hysteresis.get(),
+                "p_responseFactor": self.O_R_Factor.get(),
+                "p_MSR" : self.O_Max_Sensor_Rate.get(),
+                #"p_activityThreshold": self.O_Threshold.get(),
+                "p_reactionTime": self.O_Reaction_Time.get(),
+                "p_recoveryTime": self.O_Recovery_Time.get()
+            }
             self.B_start.config(state="active")
             tk.Label(self.slave, text="\t\t\t\t\t\t").grid(row=27, column=6)
             tk.Label(self.slave, text="Verification Successful").grid(row=27, column=6)
@@ -1713,7 +1835,7 @@ class VVIR_Window(SignIn_Window):
             self.O_Amplitude = tk.StringVar()
             self.O_Amplitude.set(self.default.get())
             tk.Label(slave, text="Amplitude (V)", font=("Helvetica", 10, "bold")).grid(row=8, column=0)
-            tk.OptionMenu(slave, self.O_Amplitude, "OFF", *self.values).grid(row=8, column=2)
+            tk.OptionMenu(slave, self.O_Amplitude, 0, *self.values).grid(row=8, column=2)
             tk.Frame(slave, height=1, width=400, bg="green").grid(row=9)
 
             self.Width()
@@ -1806,26 +1928,28 @@ class VVIR_Window(SignIn_Window):
         if (int(self.O_LRL.get()) > int(self.O_URL.get())):
             tk.Label(self.slave, text="Upper rate limit must be higher than Lower rate limit!").grid(row=27, column=6)
         else:
+            store = {
+                "p_LRL": self.O_LRL.get(),
+                "p_URL": self.O_URL.get(),
+                "p_vPulseAmplitude": float(self.O_Amplitude.get())*10,
+                "p_vPulseWidth": float(self.O_Width.get())*100,
+                "p_aPulseAmplitude": 0,
+                "p_aPulseWidth": 0,
+                "p_paceMode": "05",
+                "p_VRP": 0,
+                "p_ARP": 0,
+                "p_Hysteris": self.O_Hysteresis.get(),
+                "p_responseFactor": self.O_R_Factor.get(),
+                "p_MSR" : self.O_Max_Sensor_Rate.get(),
+                "p_activityThreshold": self.O_Threshold.get(),
+                "p_reactionTime": self.O_Reaction_Time.get(),
+                "p_recoveryTime": self.O_Recovery_Time.get()
+            }
+            print(store["p_MSR"])
             self.B_start.config(state="active")
-            tk.Label(self.skave, text="\t\t\t\t").grid(row=27, column=6)
+            tk.Label(self.slave, text="\t\t\t\t").grid(row=27, column=6)
             tk.Label(self.slave, text="Verification Successful").grid(row=27, column=6)
 
-
-#Testing Serial Communication with Arduino
-#ls /dev/tty.usb
-ser = serial.Serial()
-ser.port = "COM8"
-ser.baudrate = 9600
-print("Opening Serial Port")
-ser.open()
-ser.write(0x12)
-
-#print (ser.read())
-print (ser.name)
-
-print("Closing Serial Port")
-ser.close()
-print("Serial Port Closed")
 
 
 def main():
