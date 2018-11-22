@@ -1814,7 +1814,7 @@ class VVIR_Window(SignIn_Window):
 #Testing Serial Communication with Arduino
 #ls /dev/tty.usb
 ser = serial.Serial()
-ser.port = "/dev/tty.usbmodem14201"
+ser.port = "COM8"
 ser.baudrate = 9600
 print("Opening Serial Port")
 ser.open()
