@@ -528,8 +528,8 @@ class AOO_Window(SignIn_Window):
                 row=27, column=6)
             else:
                 store = {
-                "p_LRL" : self.O_LRL.get(),
-                "p_URL" : self.O_URL.get(),
+                "p_LRL" : 60000/int(self.O_LRL.get()),
+                "p_URL" : 60000/int(self.O_URL.get()),
                 "p_aPulseAmplitude" : float(self.O_Amplitude.get())*10,
                 "p_aPulseWidth" : float(self.O_Width.get())*100,
                 "p_vPulseAmplitude" : 0,
@@ -656,8 +656,8 @@ class VOO_Window(SignIn_Window):
             tk.Label(self.slave, text="Upper rate limit must be higher than Lower rate limit!").grid(row=27, column=6)
         else:
             store = {
-                "p_LRL": self.O_LRL.get(),
-                "p_URL": self.O_URL.get(),
+                "p_LRL": 60000/int(self.O_LRL.get()),
+                "p_URL": 60000/int(self.O_URL.get()),
                 "p_vPulseAmplitude": float(self.O_Amplitude.get())*10,
                 "p_vPulseWidth": float(self.O_Width.get())*100,
                 "p_aPulseAmplitude": 0,
@@ -849,8 +849,8 @@ class AAI_Window(SignIn_Window):
             tk.Label(self.slave, text="Upper rate limit must be higher than Lower rate limit!").grid(row=27, column=6)
         else:
             store = {
-                "p_LRL": self.O_LRL.get(),
-                "p_URL": self.O_URL.get(),
+                "p_LRL": 60000/int(self.O_LRL.get()),
+                "p_URL": 60000/int(self.O_URL.get()),
                 "p_aPulseAmplitude": float(self.O_Amplitude.get())*10,
                 "p_aPulseWidth": float(self.O_Width.get())*100,
                 "p_vPulseAmplitude": 0,
@@ -1027,8 +1027,8 @@ class VVI_Window(SignIn_Window):
             tk.Label(self.slave, text="Upper rate limit must be higher than Lower rate limit!").grid(row=27, column=6)
         else:
             store = {
-                "p_LRL": self.O_LRL.get(),
-                "p_URL": self.O_URL.get(),
+                "p_LRL": 60000/int(self.O_LRL.get()),
+                "p_URL": 60000/int(self.O_URL.get()),
                 "p_vPulseAmplitude": float(self.O_Amplitude.get())*10,
                 "p_vPulseWidth": float(self.O_Width.get())*100,
                 "p_aPulseAmplitude": 0,
@@ -1220,8 +1220,8 @@ class AOOR_Window(SignIn_Window):
             tk.Label(self.slave, text="Upper rate limit must be higher than Lower rate limit!").grid(row=27, column=6)
         else:
             store = {
-                "p_LRL": self.O_LRL.get(),
-                "p_URL": self.O_URL.get(),
+                "p_LRL": 60000/int(self.O_LRL.get()),
+                "p_URL": 60000/int(self.O_URL.get()),
                 "p_aPulseAmplitude": float(self.O_Amplitude.get())*10,
                 "p_aPulseWidth": float(self.O_Width.get())*100,
                 "p_vPulseAmplitude": 0,
@@ -1231,7 +1231,7 @@ class AOOR_Window(SignIn_Window):
                 "p_ARP": 0,
                 "p_Hysteris": 0,
                 "p_responseFactor": self.O_R_Factor.get(),
-                "p_MSR" : self.O_Max_Sensor_Rate.get(),
+                "p_MSR" : 60000/int(self.O_Max_Sensor_Rate.get()),
                 "p_activityThreshold": self.O_Threshold.get(),
                 "p_reactionTime": self.O_Reaction_Time.get(),
                 "p_recoveryTime": self.O_Recovery_Time.get()
@@ -1413,8 +1413,8 @@ class VOOR_Window(SignIn_Window):
             tk.Label(self.slave, text="Upper rate limit must be higher than Lower rate limit!").grid(row=27, column=6)
         else:
             store = {
-                "p_LRL": self.O_LRL.get(),
-                "p_URL": self.O_URL.get(),
+                "p_LRL": 60000/int(self.O_LRL.get()),
+                "p_URL": 60000/int(self.O_URL.get()),
                 "p_vPulseAmplitude": float(self.O_Amplitude.get())*10,
                 "p_vPulseWidth": float(self.O_Width.get())*100,
                 "p_aPulseAmplitude": 0,
@@ -1424,7 +1424,7 @@ class VOOR_Window(SignIn_Window):
                 "p_ARP": 0,
                 "p_Hysteris": 0,
                 "p_responseFactor": self.O_R_Factor.get(),
-                "p_MSR" : self.O_Max_Sensor_Rate.get(),
+                "p_MSR" : 60000/int(self.O_Max_Sensor_Rate.get()),
                 "p_activityThreshold": self.O_Threshold.get(),
                 "p_reactionTime": self.O_Reaction_Time.get(),
                 "p_recoveryTime": self.O_Recovery_Time.get()
@@ -1678,8 +1678,8 @@ class AAIR_Window(SignIn_Window):
             tk.Label(self.slave, text="Upper rate limit must be higher than Lower rate limit!").grid(row=27, column=6)
         else:
             store = {
-                "p_LRL": self.O_LRL.get(),
-                "p_URL": self.O_URL.get(),
+                "p_LRL": 60000/int(self.O_LRL.get()),
+                "p_URL": 60000/int(self.O_URL.get()),
                 "p_aPulseAmplitude": float(self.O_Amplitude.get())*10,
                 "p_aPulseWidth": float(self.O_Width.get())*100,
                 "p_vPulseAmplitude": 0,
@@ -1689,7 +1689,7 @@ class AAIR_Window(SignIn_Window):
                 "p_ARP": 0,
                 "p_Hysteris": self.O_Hysteresis.get(),
                 "p_responseFactor": self.O_R_Factor.get(),
-                "p_MSR" : self.O_Max_Sensor_Rate.get(),
+                "p_MSR" : 60000/int(self.O_Max_Sensor_Rate.get()),
                 #"p_activityThreshold": self.O_Threshold.get(),
                 "p_reactionTime": self.O_Reaction_Time.get(),
                 "p_recoveryTime": self.O_Recovery_Time.get()
@@ -1929,8 +1929,8 @@ class VVIR_Window(SignIn_Window):
             tk.Label(self.slave, text="Upper rate limit must be higher than Lower rate limit!").grid(row=27, column=6)
         else:
             store = {
-                "p_LRL": self.O_LRL.get(),
-                "p_URL": self.O_URL.get(),
+                "p_LRL": 60000/int(self.O_LRL.get()),
+                "p_URL": 60000/int(self.O_URL.get()),
                 "p_vPulseAmplitude": float(self.O_Amplitude.get())*10,
                 "p_vPulseWidth": float(self.O_Width.get())*100,
                 "p_aPulseAmplitude": 0,
@@ -1940,7 +1940,7 @@ class VVIR_Window(SignIn_Window):
                 "p_ARP": 0,
                 "p_Hysteris": self.O_Hysteresis.get(),
                 "p_responseFactor": self.O_R_Factor.get(),
-                "p_MSR" : self.O_Max_Sensor_Rate.get(),
+                "p_MSR" : 60000/int(self.O_Max_Sensor_Rate.get()),
                 "p_activityThreshold": self.O_Threshold.get(),
                 "p_reactionTime": self.O_Reaction_Time.get(),
                 "p_recoveryTime": self.O_Recovery_Time.get()
