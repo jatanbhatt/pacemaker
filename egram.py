@@ -6,6 +6,25 @@ import sys
 
 name = ""
 
+#setting up manual bytestream (115 bytes)
+startByte=16
+setMode=11
+URL=float(120)          # Upper Rate Limit (in BPM)
+LRL=float(60)           # Lower Rate Limit (in BPM)
+aAmp=float(3.5)         # Atrial Pulse Amplitude (in V)
+vAmp=float(3.5)         # Ventricular Pulse Amplitude (in V)
+aWid=float(200)          # Atrial Pulse Width (in msec)
+vWid=float(200)          # Ventricular Pulse Width (in msec)
+mode=5                  # Pacemaker mode (VOO=0,VOOR=1,AOO=2,AOOR=3,VVI=4,VVIR=5,AAI=6,AAIR=7
+VRP=float(100)          # Ventricular Refractory Period (in msec)
+ARP=float(100)          # Atrial Refractory Period (in msec)
+hyst=float(0)           # Hysteresis (no clue)
+respFac=float(8)        # Reponse Factor (1-16)
+MSR=float(120)          # Maximum Sensor Rate (in BPM)
+actThr=float(0.5)       # Activity Threshold (Should have numbers corresponding to accelerometer values (in g) - VLow,Low,MedLow,Med,MedHigh,High,VHigh) 
+rxnTim=float(3)         # Reaction time to activity (in sec) 
+recTim=float(3)         # Recovery time from activity (in sec)
+
 class WelcomeScreen:    #First window you see
 
     def __init__(self, master): #must define init function when you make a class, takes parameters 'master'
@@ -421,8 +440,58 @@ class SignIn_Window(WelcomeScreen):
         window = tk.Toplevel()
         instance = VOOR_Window(window)
 
+class serialCom:
+    def send(self):
+        ser = serial.Serial(
+        stopbits=serial.STOPBITS_ONE,
+        bytesize=serial.EIGHTBITS,
+        port = "COM7",
+        baudrate=115200
+        )
 
-class AOO_Window(SignIn_Window):
+        global startByte
+        global setMode
+        global URL
+        global LRL
+        global aAmp
+        global vAmp
+        global aWid
+        global vWid
+        global mode
+        global VRP
+        global ARP
+        global hyst
+        global respFac
+        global MSR
+        global actThr
+        global rxnTim
+        global recTim
+
+        print("Is Serial Port Open:",ser.isOpen())
+
+        var=struct.pack('<BBddddddBdddddddd',startByte,setMode,URL,LRL,aAmp,vAmp,aWid,vWid,mode,VRP,ARP,hyst,respFac,MSR,actThr,rxnTim,recTim)  # B for unsigned char, takes an int 
+                                                                                                                                        # d for double, takes a float
+                                                                                                                                        # < for little-endian, as programmed on FRDM board thru Simulink
+        print("To send (in binary): ", var)
+        print("Size of string representation is {}.".format(struct.calcsize('<BBddddddBdddddddd')))
+        print("To send (in decimal): ", struct.unpack('<BBddddddBdddddddd',var))
+
+
+        print("send1",ser.write(var))   # struct.pack already packs into byte array in binary, so we can just send that over serial
+
+        time.sleep(10)
+
+        mode=1
+        LRL=float(30)
+        actThr=float(1)
+
+        var=struct.pack('<BBddddddBdddddddd',startByte,setMode,URL,LRL,aAmp,vAmp,aWid,vWid,mode,VRP,ARP,hyst,respFac,MSR,actThr,rxnTim,recTim)
+        print("send2",ser.write(var))
+
+        ser.close()
+        print("Serial Port Closed")
+
+class AOO_Window(SignIn_Window,serialCom):
 
     def __init__(self, slave):      #each block makes a label, calls the function that contains the appropriate list
         self.slave = slave                            #and creates a dropdown menu
@@ -519,6 +588,7 @@ class AOO_Window(SignIn_Window):
         tk.Toplevel()
 
     def saveSettings(self):
+        serialCom.send(self)
         fileName = name + ".txt"
         file = open(fileName, "w")
         file.write("AOO\n")
@@ -536,6 +606,8 @@ class AOO_Window(SignIn_Window):
                 text="Upper rate limit must be higher than Lower rate limit!").grid(
                 row=27, column=6)
             else:
+                global mode
+                mode = 2
                 store = {
                 "p_LRL" : 60000/int(self.O_LRL.get()),
                 "p_URL" : 60000/int(self.O_URL.get()),
@@ -558,7 +630,7 @@ class AOO_Window(SignIn_Window):
                 tk.Label(self.slave, text="\t\t\t\t\t\t").grid(row=27, column=6)
                 tk.Label(self.slave, text="Verification Successful").grid(row=27, column=6)
 
-class VOO_Window(SignIn_Window):
+class VOO_Window(SignIn_Window,serialCom):
 
     def __init__(self, slave):
             self.slave = slave
@@ -673,6 +745,8 @@ class VOO_Window(SignIn_Window):
         if(int(self.O_LRL.get()) >= int(self.O_URL.get())):
             tk.Label(self.slave, text="Upper rate limit must be higher than Lower rate limit!").grid(row=27, column=6)
         else:
+            global mode
+            mode = 0
             store = {
                 "p_LRL": 60000/int(self.O_LRL.get()),
                 "p_URL": 60000/int(self.O_URL.get()),
@@ -1274,7 +1348,7 @@ class AOOR_Window(SignIn_Window):
             tk.Label(self.slave, text="\t\t\t\t\t\t").grid(row=27, column=6)
             tk.Label(self.slave, text="Verification Successful").grid(row=27, column=6)
 
-class VOOR_Window(SignIn_Window):
+class VOOR_Window(SignIn_Window,serialCom):
 
     def __init__(self, slave):
         self.slave = slave
@@ -1452,6 +1526,8 @@ class VOOR_Window(SignIn_Window):
         if (int(self.O_LRL.get()) >= int(self.O_URL.get())):
             tk.Label(self.slave, text="Upper rate limit must be higher than Lower rate limit!").grid(row=27, column=6)
         else:
+            global mode
+            mode = 1
             store = {
                 "p_LRL": 60000/int(self.O_LRL.get()),
                 "p_URL": 60000/int(self.O_URL.get()),
@@ -1473,7 +1549,7 @@ class VOOR_Window(SignIn_Window):
             tk.Label(self.slave, text="\t\t\t\t\t\t").grid(row=27,column=6)
             tk.Label(self.slave, text="Verification Successful").grid(row=27, column=6)
 
-class AAIR_Window(SignIn_Window):
+class AAIR_Window(SignIn_Window,serialCom):
 
     def __init__(self, slave):
         self.slave = slave
@@ -1722,6 +1798,8 @@ class AAIR_Window(SignIn_Window):
         if (int(self.O_LRL.get()) >= int(self.O_URL.get())):
             tk.Label(self.slave, text="Upper rate limit must be higher than Lower rate limit!").grid(row=27, column=6)
         else:
+            global mode
+            mode = 7
             store = {
                 "p_LRL": 60000/int(self.O_LRL.get()),
                 "p_URL": 60000/int(self.O_URL.get()),
@@ -1742,59 +1820,6 @@ class AAIR_Window(SignIn_Window):
             self.B_start.config(state="active")
             tk.Label(self.slave, text="\t\t\t\t\t\t").grid(row=27, column=6)
             tk.Label(self.slave, text="Verification Successful").grid(row=27, column=6)
-
-
-class serialCom:
-    def send(self):
-        ser = serial.Serial(
-        stopbits=serial.STOPBITS_ONE,
-        bytesize=serial.EIGHTBITS,
-        port = "COM7",
-        baudrate=115200
-        )
-
-        print("Is Serial Port Open:",ser.isOpen())
-
-        #setting up manual bytestream (115 bytes)
-        startByte=16
-        setMode=11
-        URL=float(120)          # Upper Rate Limit (in BPM)
-        LRL=float(60)           # Lower Rate Limit (in BPM)
-        aAmp=float(3.5)         # Atrial Pulse Amplitude (in V)
-        vAmp=float(3.5)         # Ventricular Pulse Amplitude (in V)
-        aWid=float(200)          # Atrial Pulse Width (in msec)
-        vWid=float(200)          # Ventricular Pulse Width (in msec)
-        mode=4                  # Pacemaker mode (VOO=0,VOOR=1,AOO=2,AOOR=3,VVI=4,VVIR=5,AAI=6,AAIR=7
-        VRP=float(100)          # Ventricular Refractory Period (in msec)
-        ARP=float(100)          # Atrial Refractory Period (in msec)
-        hyst=float(0)           # Hysteresis (no clue)
-        respFac=float(8)        # Reponse Factor (1-16)
-        MSR=float(120)          # Maximum Sensor Rate (in BPM)
-        actThr=float(0.5)       # Activity Threshold (Should have numbers corresponding to accelerometer values (in g) - VLow,Low,MedLow,Med,MedHigh,High,VHigh) 
-        rxnTim=float(3)         # Reaction time to activity (in sec) 
-        recTim=float(3)         # Recovery time from activity (in sec)
-
-        var=struct.pack('<BBddddddBdddddddd',startByte,setMode,URL,LRL,aAmp,vAmp,aWid,vWid,mode,VRP,ARP,hyst,respFac,MSR,actThr,rxnTim,recTim)  # B for unsigned char, takes an int 
-                                                                                                                                        # d for double, takes a float
-                                                                                                                                        # < for little-endian, as programmed on FRDM board thru Simulink
-        print("To send (in binary): ", var)
-        print("Size of string representation is {}.".format(struct.calcsize('<BBddddddBdddddddd')))
-        print("To send (in decimal): ", struct.unpack('<BBddddddBdddddddd',var))
-
-
-        print("send1",ser.write(var))   # struct.pack already packs into byte array in binary, so we can just send that over serial
-
-        time.sleep(10)
-
-        mode=1
-        LRL=float(30)
-        actThr=float(1)
-
-        var=struct.pack('<BBddddddBdddddddd',startByte,setMode,URL,LRL,aAmp,vAmp,aWid,vWid,mode,VRP,ARP,hyst,respFac,MSR,actThr,rxnTim,recTim)
-        print("send2",ser.write(var))
-
-        ser.close()
-        print("Serial Port Closed")
 
 
 class VVIR_Window(SignIn_Window,serialCom):
@@ -2010,7 +2035,7 @@ class VVIR_Window(SignIn_Window,serialCom):
         tk.Toplevel()
 
     def saveSettings(self):
-        self.serialCom.send
+        serialCom.send(self)
         fileName = name + ".txt"
         file = open(fileName, "w")
         file.write("AAOR\n")
@@ -2035,6 +2060,8 @@ class VVIR_Window(SignIn_Window,serialCom):
         if (int(self.O_LRL.get()) > int(self.O_URL.get())):
             tk.Label(self.slave, text="Upper rate limit must be higher than Lower rate limit!").grid(row=27, column=6)
         else:
+            global mode
+            mode = 5
             store = {
                 "p_LRL": 60000/int(self.O_LRL.get()),
                 "p_URL": 60000/int(self.O_URL.get()),
