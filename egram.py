@@ -1,5 +1,8 @@
 import tkinter as tk #importing tkinter library
 import time
+import serial
+import struct
+import sys
 
 name = ""
 
@@ -1740,7 +1743,61 @@ class AAIR_Window(SignIn_Window):
             tk.Label(self.slave, text="\t\t\t\t\t\t").grid(row=27, column=6)
             tk.Label(self.slave, text="Verification Successful").grid(row=27, column=6)
 
-class VVIR_Window(SignIn_Window):
+
+class serialCom:
+    def send(self):
+        ser = serial.Serial(
+        stopbits=serial.STOPBITS_ONE,
+        bytesize=serial.EIGHTBITS,
+        port = "COM7",
+        baudrate=115200
+        )
+
+        print("Is Serial Port Open:",ser.isOpen())
+
+        #setting up manual bytestream (115 bytes)
+        startByte=16
+        setMode=11
+        URL=float(120)          # Upper Rate Limit (in BPM)
+        LRL=float(60)           # Lower Rate Limit (in BPM)
+        aAmp=float(3.5)         # Atrial Pulse Amplitude (in V)
+        vAmp=float(3.5)         # Ventricular Pulse Amplitude (in V)
+        aWid=float(200)          # Atrial Pulse Width (in msec)
+        vWid=float(200)          # Ventricular Pulse Width (in msec)
+        mode=4                  # Pacemaker mode (VOO=0,VOOR=1,AOO=2,AOOR=3,VVI=4,VVIR=5,AAI=6,AAIR=7
+        VRP=float(100)          # Ventricular Refractory Period (in msec)
+        ARP=float(100)          # Atrial Refractory Period (in msec)
+        hyst=float(0)           # Hysteresis (no clue)
+        respFac=float(8)        # Reponse Factor (1-16)
+        MSR=float(120)          # Maximum Sensor Rate (in BPM)
+        actThr=float(0.5)       # Activity Threshold (Should have numbers corresponding to accelerometer values (in g) - VLow,Low,MedLow,Med,MedHigh,High,VHigh) 
+        rxnTim=float(3)         # Reaction time to activity (in sec) 
+        recTim=float(3)         # Recovery time from activity (in sec)
+
+        var=struct.pack('<BBddddddBdddddddd',startByte,setMode,URL,LRL,aAmp,vAmp,aWid,vWid,mode,VRP,ARP,hyst,respFac,MSR,actThr,rxnTim,recTim)  # B for unsigned char, takes an int 
+                                                                                                                                        # d for double, takes a float
+                                                                                                                                        # < for little-endian, as programmed on FRDM board thru Simulink
+        print("To send (in binary): ", var)
+        print("Size of string representation is {}.".format(struct.calcsize('<BBddddddBdddddddd')))
+        print("To send (in decimal): ", struct.unpack('<BBddddddBdddddddd',var))
+
+
+        print("send1",ser.write(var))   # struct.pack already packs into byte array in binary, so we can just send that over serial
+
+        time.sleep(10)
+
+        mode=1
+        LRL=float(30)
+        actThr=float(1)
+
+        var=struct.pack('<BBddddddBdddddddd',startByte,setMode,URL,LRL,aAmp,vAmp,aWid,vWid,mode,VRP,ARP,hyst,respFac,MSR,actThr,rxnTim,recTim)
+        print("send2",ser.write(var))
+
+        ser.close()
+        print("Serial Port Closed")
+
+
+class VVIR_Window(SignIn_Window,serialCom):
 
     def __init__(self, slave):
         self.slave = slave
@@ -1953,6 +2010,7 @@ class VVIR_Window(SignIn_Window):
         tk.Toplevel()
 
     def saveSettings(self):
+        self.serialCom.send
         fileName = name + ".txt"
         file = open(fileName, "w")
         file.write("AAOR\n")
@@ -1970,6 +2028,7 @@ class VVIR_Window(SignIn_Window):
         file.write(self.O_Reaction_Time.get() + "\n")
         file.write(self.O_R_Factor.get() + "\n")
         file.close()
+     
 
     def verifyMode(self):
 
@@ -1997,6 +2056,7 @@ class VVIR_Window(SignIn_Window):
             self.B_start.config(state="active")
             tk.Label(self.slave, text="\t\t\t\t").grid(row=27, column=6)
             tk.Label(self.slave, text="Verification Successful").grid(row=27, column=6)
+
 
 
 
