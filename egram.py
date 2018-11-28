@@ -481,12 +481,12 @@ class serialCom:
 
         time.sleep(10)
 
-        mode=1
-        LRL=float(30)
-        actThr=float(1)
+        #mode=1
+        #LRL=float(30)
+        #actThr=float(1)
 
-        var=struct.pack('<BBddddddBdddddddd',startByte,setMode,URL,LRL,aAmp,vAmp,aWid,vWid,mode,VRP,ARP,hyst,respFac,MSR,actThr,rxnTim,recTim)
-        print("send2",ser.write(var))
+        #var=struct.pack('<BBddddddBdddddddd',startByte,setMode,URL,LRL,aAmp,vAmp,aWid,vWid,mode,VRP,ARP,hyst,respFac,MSR,actThr,rxnTim,recTim)
+        #print("send2",ser.write(var))
 
         ser.close()
         print("Serial Port Closed")
@@ -606,26 +606,25 @@ class AOO_Window(SignIn_Window,serialCom):
                 text="Upper rate limit must be higher than Lower rate limit!").grid(
                 row=27, column=6)
             else:
+                global startByte
+                global setMode
+                global URL
+                global LRL
+                global aAmp
+                global vAmp
+                global aWid
+                global vWid
                 global mode
                 mode = 2
-                store = {
-                "p_LRL" : 60000/int(self.O_LRL.get()),
-                "p_URL" : 60000/int(self.O_URL.get()),
-                "p_aPulseAmplitude" : float(self.O_Amplitude.get())*10,
-                "p_aPulseWidth" : float(self.O_Width.get())*100,
-                "p_vPulseAmplitude" : 0,
-                "p_vPulseWidth" : 0,
-                "p_paceMode" : "02",
-                "p_VRP" : 0,
-                "p_ARP" : 0,
-                "p_Hysteresis" : 0,
-                "p_responseFactor" : 0,
-                "p_MSR" : 0,
-                "p_activityThreshold" : 0,
-                "p_reactionTime" : 0,
-                "p_recoveryTime" : 0
-                }
-                print(store["p_aPulseAmplitude"])
+                global VRP
+                global ARP
+                global hyst
+                global respFac
+                global MSR
+                global actThr
+                global rxnTim
+                global recTim
+
                 self.B_start.config(state="active")
                 tk.Label(self.slave, text="\t\t\t\t\t\t").grid(row=27, column=6)
                 tk.Label(self.slave, text="Verification Successful").grid(row=27, column=6)
@@ -745,8 +744,25 @@ class VOO_Window(SignIn_Window,serialCom):
         if(int(self.O_LRL.get()) >= int(self.O_URL.get())):
             tk.Label(self.slave, text="Upper rate limit must be higher than Lower rate limit!").grid(row=27, column=6)
         else:
+            global startByte
+            global setMode
+            global URL
+            global LRL
+            LRL = float(self.O_LRL.get())
+            global aAmp
+            global vAmp
+            global aWid
+            global vWid
             global mode
             mode = 0
+            global VRP
+            global ARP
+            global hyst
+            global respFac
+            global MSR
+            global actThr
+            global rxnTim
+            global recTim
             store = {
                 "p_LRL": 60000/int(self.O_LRL.get()),
                 "p_URL": 60000/int(self.O_URL.get()),
@@ -945,6 +961,24 @@ class AAI_Window(SignIn_Window):
         if (int(self.O_LRL.get()) >= int(self.O_URL.get())):
             tk.Label(self.slave, text="Upper rate limit must be higher than Lower rate limit!").grid(row=27, column=6)
         else:
+            global startByte
+            global setMode
+            global URL
+            global LRL
+            global aAmp
+            global vAmp
+            global aWid
+            global vWid
+            global mode
+            global VRP
+            global ARP
+            global hyst
+            global respFac
+            global MSR
+            global actThr
+            global rxnTim
+            global recTim
+            mode = 6
             store = {
                 "p_LRL": 60000/int(self.O_LRL.get()),
                 "p_URL": 60000/int(self.O_URL.get()),
@@ -966,7 +1000,7 @@ class AAI_Window(SignIn_Window):
             tk.Label(self.slave, text="\t\t\t\t\t\t").grid(row=27, column=6)
             tk.Label(self.slave, text="Verification Successful").grid(row=27, column=6)
 
-class VVI_Window(SignIn_Window):
+class VVI_Window(SignIn_Window,serialCom):
 
     def __init__(self, slave):
         self.slave = slave
@@ -1111,6 +1145,7 @@ class VVI_Window(SignIn_Window):
         tk.Toplevel()
 
     def saveSettings(self):
+        serialCom.send(self)
         fileName = name + ".txt"
         file = open(fileName, "w")
         file.write("VVI\n")
@@ -1129,6 +1164,24 @@ class VVI_Window(SignIn_Window):
         if (int(self.O_LRL.get()) >= int(self.O_URL.get())):
             tk.Label(self.slave, text="Upper rate limit must be higher than Lower rate limit!").grid(row=27, column=6)
         else:
+            global startByte
+            global setMode
+            global URL
+            global LRL
+            global aAmp
+            global vAmp
+            global aWid
+            global vWid
+            global mode
+            mode = 4
+            global VRP
+            global ARP
+            global hyst
+            global respFac
+            global MSR
+            global actThr
+            global rxnTim
+            global recTim
             store = {
                 "p_LRL": 60000/int(self.O_LRL.get()),
                 "p_URL": 60000/int(self.O_URL.get()),
@@ -1150,7 +1203,7 @@ class VVI_Window(SignIn_Window):
             tk.Label(self.slave, text="\t\t\t\t\t\t").grid(row=27, column=6)
             tk.Label(self.slave, text="Verification Successful").grid(row=27, column=6)
 
-class AOOR_Window(SignIn_Window):
+class AOOR_Window(SignIn_Window,serialCom):
 
     def __init__(self, slave):
         self.slave = slave
@@ -1308,6 +1361,7 @@ class AOOR_Window(SignIn_Window):
         tk.Toplevel()
 
     def saveSettings(self):
+        serialCom.send(self)
         fileName = name + ".txt"
         file = open(fileName, "w")
         file.write("AAOR\n")
@@ -1327,6 +1381,8 @@ class AOOR_Window(SignIn_Window):
         if (int(self.O_LRL.get()) >= int(self.O_URL.get())):
             tk.Label(self.slave, text="Upper rate limit must be higher than Lower rate limit!").grid(row=27, column=6)
         else:
+            global mode
+            mode = 3
             store = {
                 "p_LRL": 60000/int(self.O_LRL.get()),
                 "p_URL": 60000/int(self.O_URL.get()),
@@ -1507,6 +1563,7 @@ class VOOR_Window(SignIn_Window,serialCom):
         tk.Toplevel()
 
     def saveSettings(self):
+        serialCom.send(self)
         fileName = name + ".txt"
         file = open(fileName, "w")
         file.write("VOOR\n")
@@ -1527,7 +1584,7 @@ class VOOR_Window(SignIn_Window,serialCom):
             tk.Label(self.slave, text="Upper rate limit must be higher than Lower rate limit!").grid(row=27, column=6)
         else:
             global mode
-            mode = 1
+            mode = 0
             store = {
                 "p_LRL": 60000/int(self.O_LRL.get()),
                 "p_URL": 60000/int(self.O_URL.get()),
