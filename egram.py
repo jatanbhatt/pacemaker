@@ -609,10 +609,14 @@ class AOO_Window(SignIn_Window,serialCom):
                 global startByte
                 global setMode
                 global URL
+                URL = float(self.O_URL.get())
                 global LRL
+                LRL = float(self.O_LRL.get())
                 global aAmp
+                aAmp = float(self.O_Amplitude.get())
                 global vAmp
                 global aWid
+                aWid = float(self.O_Width.get())
                 global vWid
                 global mode
                 mode = 2
@@ -747,12 +751,15 @@ class VOO_Window(SignIn_Window,serialCom):
             global startByte
             global setMode
             global URL
+            URL = float(self.O_LRL.get())
             global LRL
             LRL = float(self.O_LRL.get())
             global aAmp
             global vAmp
+            vAmp = float(self.O_Amplitude)
             global aWid
             global vWid
+            vWid = float(self.O_Width)
             global mode
             mode = 0
             global VRP
@@ -1168,6 +1175,7 @@ class VVI_Window(SignIn_Window,serialCom):
             global setMode
             global URL
             global LRL
+            LRL = float(self.O_LRL.get())
             global aAmp
             global vAmp
             global aWid
@@ -1583,25 +1591,35 @@ class VOOR_Window(SignIn_Window,serialCom):
         if (int(self.O_LRL.get()) >= int(self.O_URL.get())):
             tk.Label(self.slave, text="Upper rate limit must be higher than Lower rate limit!").grid(row=27, column=6)
         else:
+            global startByte
+            global setMode      
+            global URL
+            URL = float(self.O_URL.get())
+            global LRL
+            LRL = float(self.O_LRL.get())
+            global aAmp
+            global vAmp
+            vAmp = float(self.O_Amplitude.get())
+            global aWid
+            global vWid
+            vWid = float(self.O_Width.get())
             global mode
-            mode = 0
-            store = {
-                "p_LRL": 60000/int(self.O_LRL.get()),
-                "p_URL": 60000/int(self.O_URL.get()),
-                "p_vPulseAmplitude": float(self.O_Amplitude.get())*10,
-                "p_vPulseWidth": float(self.O_Width.get())*100,
-                "p_aPulseAmplitude": 0,
-                "p_aPulseWidth": 0,
-                "p_paceMode": "01",
-                "p_VRP": 0,
-                "p_ARP": 0,
-                "p_Hysteris": 0,
-                "p_responseFactor": self.O_R_Factor.get(),
-                "p_MSR" : 60000/int(self.O_Max_Sensor_Rate.get()),
-                "p_activityThreshold": self.O_Threshold.get(),
-                "p_reactionTime": self.O_Reaction_Time.get(),
-                "p_recoveryTime": self.O_Recovery_Time.get()
-            }
+            mode = 1
+            global VRP
+            global ARP
+            global hyst
+            global respFac
+            respFac = float(self.O_R_Factor.get())
+            global MSR
+            MSR = float(self.O_Max_Sensor_Rate.get())
+            global actThr
+            actThr = float(self.O_Threshold.get())
+            global rxnTim
+            rxnTim = float(self.O_Reaction_Time.get())
+            global recTim
+            recTim = float(self.O_Recovery_Time.get())
+            
+
             self.B_start.config(state="active")
             tk.Label(self.slave, text="\t\t\t\t\t\t").grid(row=27,column=6)
             tk.Label(self.slave, text="Verification Successful").grid(row=27, column=6)
