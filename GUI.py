@@ -1,5 +1,13 @@
 import tkinter as tk #importing tkinter library
-
+import dash
+from dash.dependencies import Output, Event
+import dash_core_components as dcc
+import dash_html_components as html
+import plotly
+import random
+import plotly.graph_objs as go
+from collections import deque
+import os
 name = ""
 
 class WelcomeScreen:    #First window you see
@@ -951,7 +959,7 @@ class VVI_Window(SignIn_Window):
         B_auth.grid(row=25, column=6)
         self.B_start = tk.Button(slave, text="Start Mode", state="disabled", command=self.saveSettings)
         self.B_start.grid(row=26, column=6)
-
+        tk.Button(slave, text="graph", command=self.callGraph).grid(row=27, column=7)
     def saveSettings(self):
         fileName = name + ".txt"
         file = open(fileName, "w")
@@ -973,6 +981,8 @@ class VVI_Window(SignIn_Window):
         else:
             self.B_start.config(state="active")
             tk.Label(self.slave, text="Verification Successful").grid(row=27, column=6)
+    def callGraph(self):
+        os.startfile('serial_graph.py')
 
 class AOOR_Window(SignIn_Window):
 
@@ -1807,11 +1817,8 @@ class VVIR_Window(SignIn_Window):
             self.B_start.config(state="active")
             tk.Label(self.slave, text="Verification Successful").grid(row=27, column=6)
 
-
-
 def main():
     master = tk.Tk()
     x = WelcomeScreen(master)
     master.mainloop()
-
 main()
