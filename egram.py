@@ -1350,38 +1350,37 @@ class AOOR_Window(SignIn_Window,serialCom):
         file.close()
 
     def verifyMode(self):
-        global startByte
-        global setMode
-        global URL
-        URL = float(self.O_URL.get())
-        global LRL
-        LRL = float(self.O_LRL.get())
-        global aAmp
-        aAmp = float(self.O_Amplitude.get())
-        global vAmp
-        global aWid
-        aWid = float(self.O_Width.get())
-        global vWid
-        global mode
-        mode = 4
-        global VRP
-        global ARP
-        global hyst
-        global respFac
-        respFac = float(self.O_R_Factor.get())
-        global MSR
-        MSR = float(self.O_Max_Sensor_Rate.get())
-        global actThr
-        actThr = float(self.O_Threshold.get())
-        global rxnTim
-        rxnTim = float(self.O_Reaction_Time.get())
-        global recTim
-        recTim = float(self.O_Recovery_Time.get())
+
         if (int(self.O_LRL.get()) >= int(self.O_URL.get())):
             tk.Label(self.slave, text="Upper rate limit must be higher than Lower rate limit!").grid(row=27, column=6)
         else:
+            global startByte
+            global setMode
+            global URL
+            URL = float(self.O_URL.get())
+            global LRL
+            LRL = float(self.O_LRL.get())
+            global aAmp
+            aAmp = float(self.O_Amplitude.get())
+            global vAmp
+            global aWid
+            aWid = float(self.O_Width.get())
+            global vWid
             global mode
             mode = 3
+            global VRP
+            global ARP
+            global hyst
+            global respFac
+            respFac = float(self.O_R_Factor.get())
+            global MSR
+            MSR = float(self.O_Max_Sensor_Rate.get())
+            global actThr
+            actThr = float(self.O_Threshold.get())
+            global rxnTim
+            rxnTim = float(self.O_Reaction_Time.get())
+            global recTim
+            recTim = float(self.O_Recovery_Time.get())
             self.B_start.config(state="active")
             tk.Label(self.slave, text="\t\t\t\t\t\t").grid(row=27, column=6)
             tk.Label(self.slave, text="Verification Successful").grid(row=27, column=6)
