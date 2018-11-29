@@ -751,7 +751,7 @@ class VOO_Window(SignIn_Window,serialCom):
             global startByte
             global setMode
             global URL
-            URL = float(self.O_LRL.get())
+            URL = float(self.O_URL.get())
             global LRL
             LRL = float(self.O_LRL.get())
             global aAmp
@@ -1163,7 +1163,7 @@ class VVI_Window(SignIn_Window,serialCom):
             global mode
             mode = 4
             global VRP
-            VRP = float(self.Refractory.get())
+            #VRP = float(self.Refractory.get())
             global ARP
             global hyst
             hyst = float(self.O_Hysteresis.get())
