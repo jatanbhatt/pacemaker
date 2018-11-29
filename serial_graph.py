@@ -11,33 +11,51 @@ import time
 import struct
 import sys
 #_______________________________________________
-
 ser = serial.Serial(
-    stopbits=serial.STOPBITS_ONE,
-    bytesize=serial.EIGHTBITS,
-    port = "COM5",
-    baudrate=115200
+stopbits=serial.STOPBITS_ONE,
+bytesize=serial.EIGHTBITS,
+port = "COM7",
+baudrate=115200
 )
 
-#_______________________________________________
+global startByte
+global setMode
+global URL
+global LRL
+global aAmp
+global vAmp
+global aWid
+global vWid
+global mode
+global VRP
+global ARP
+global hyst
+global respFac
+global MSR
+global actThr
+global rxnTim
+global recTim
+
 startByte=16
-setMode=33
+setMode=11
 URL=float(120)          # Upper Rate Limit (in BPM)
 LRL=float(60)           # Lower Rate Limit (in BPM)
 aAmp=float(3.5)         # Atrial Pulse Amplitude (in V)
 vAmp=float(3.5)         # Ventricular Pulse Amplitude (in V)
 aWid=float(200)          # Atrial Pulse Width (in msec)
 vWid=float(200)          # Ventricular Pulse Width (in msec)
-mode=2            # Pacemaker mode (VOO=0,VOOR=1,AOO=2,AOOR=3,VVI=4,VVIR=5,AAI=6,AAIR=7
+mode=5                  # Pacemaker mode (VOO=0,VOOR=1,AOO=2,AOOR=3,VVI=4,VVIR=5,AAI=6,AAIR=7
 VRP=float(100)          # Ventricular Refractory Period (in msec)
 ARP=float(100)          # Atrial Refractory Period (in msec)
 hyst=float(0)           # Hysteresis (no clue)
 respFac=float(8)        # Reponse Factor (1-16)
 MSR=float(120)          # Maximum Sensor Rate (in BPM)
-actThr=float(0.5)       # Activity Threshold (Should have numbers corresponding to accelerometer values (in g) - VLow,Low,MedLow,Med,MedHigh,High,VHigh)
-rxnTim=float(3)         # Reaction time to activity (in sec)
+actThr=float(0.5)       # Activity Threshold (Should have numbers corresponding to accelerometer values (in g) - VLow,Low,MedLow,Med,MedHigh,High,VHigh) 
+rxnTim=float(3)         # Reaction time to activity (in sec) 
 recTim=float(3)         # Recovery time from activity (in sec)
-var=struct.pack('<BBddddddBdddddddd',startByte,setMode,URL,LRL,aAmp,vAmp,aWid,vWid,mode,VRP,ARP,hyst,respFac,MSR,actThr,rxnTim,recTim)
+print("Is Serial Port Open:",ser.isOpen())
+
+var=struct.pack('<BBddddddBdddddddd',startByte,setMode,URL,LRL,aAmp,vAmp,aWid,vWid,mode,VRP,ARP,hyst,respFac,MSR,actThr,rxnTim,recTim) 
 #_______________________________________________
 #_______________________________________________
 #_______________________________________________
